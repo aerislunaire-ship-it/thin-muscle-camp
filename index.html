@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101214">
+<title>薄肌训练营 · 小西瓜居家训练版 V8.1</title>
+<style>
+:root{--bg:#f5f6f7;--card:#fff;--ink:#111315;--muted:#737981;--line:#e8eaed;--soft:#f0f2f4;--accent:#111315;--ok:#2f7e5d;--warn:#a66f10;--r:22px}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
+button,input{font:inherit}button{cursor:pointer}.app{max-width:620px;margin:auto;padding:18px 16px 34px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.greet{font-size:12px;color:var(--muted)}h1{margin:4px 0;font-size:24px;letter-spacing:-.5px}
+.menu{width:42px;height:42px;border:0;border-radius:14px;background:#fff;font-size:18px;box-shadow:0 8px 22px #00000008}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:17px;margin-bottom:12px}.hero{background:linear-gradient(145deg,#fff,#eef0f2);padding:21px}
+.row{display:flex;justify-content:space-between;align-items:center}.label{font-size:12px;color:var(--muted)}.score{font-size:58px;line-height:1;font-weight:800}.goal{text-align:right;color:var(--muted);font-size:12px}.goal b{display:block;color:var(--ink);font-size:15px;margin:4px 0}.bar{height:7px;background:#e3e5e8;border-radius:9px;overflow:hidden;margin:15px 0 10px}.bar i{display:block;width:0;height:100%;background:#111}
+.mini{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.mini div{background:#f1f2f4;border-radius:14px;padding:10px}.mini b{font-size:14px}.mini span{display:block;font-size:11px;color:var(--muted);margin-top:4px}
+h2{font-size:17px;margin:0 0 10px}.sub{font-size:12px;color:var(--muted)}.meal{border:1px solid var(--line);border-radius:17px;padding:13px;margin:9px 0}.meal-top{display:flex;justify-content:space-between}.meal-title{font-weight:700}.food{font-size:14px;margin:5px 0;line-height:1.5}.meta{font-size:11px;color:var(--muted)}
+.btn{border:0;border-radius:14px;background:#111;color:#fff;padding:13px;font-weight:700;width:100%}.light{background:#f0f1f3;color:#111}.inline{display:flex;gap:8px}.inline>*{flex:1}
+.train-main{padding:15px;border-radius:17px;background:#111;color:white}.train-main .muted{color:#b8bdc3}.train-main strong{font-size:18px;display:block;margin:3px 0 8px}.train-actions{display:flex;gap:8px;margin-top:12px}.train-actions button{flex:1;border:0;border-radius:12px;padding:11px}.train-actions .start{background:#fff;color:#111}.train-actions .done{background:#2f7e5d;color:#fff}
+.habit{display:grid;grid-template-columns:1fr 1fr;gap:8px}.habit div{background:#f3f4f5;border-radius:15px;padding:13px}.habit b{font-size:14px}.habit span{display:block;color:var(--muted);font-size:11px;margin-top:4px}
+.drawer,.modal{position:fixed;inset:0;background:#0007;display:none;z-index:20}.drawer.open{display:block}.panel{position:absolute;right:0;top:0;height:100%;width:min(88%,390px);background:#fff;padding:20px;overflow:auto}.head{display:flex;justify-content:space-between;align-items:center}.close{border:0;width:38px;height:38px;border-radius:12px;background:#f0f1f2}.section{font-size:12px;color:var(--muted);margin:20px 0 6px}.list button{width:100%;border:0;border-bottom:1px solid var(--line);background:none;text-align:left;padding:14px 2px;display:flex;justify-content:space-between}.modal.open{display:flex;align-items:flex-end}.sheet{width:100%;max-width:620px;margin:auto;background:#fff;border-radius:22px 22px 0 0;padding:20px;max-height:88vh;overflow:auto}.sheethead{display:flex;justify-content:space-between;align-items:center}
+.exercise-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.ex{padding:13px;border:1px solid var(--line);border-radius:15px}.ex b{font-size:14px}.ex span{display:block;color:var(--muted);font-size:11px;margin-top:4px}
+input{width:100%;padding:13px;border:1px solid var(--line);border-radius:13px;background:#fafbfc;outline:none}
+.timer{text-align:center}.timer .num{font-size:72px;font-weight:800;margin:20px 0 4px}.timer .name{font-size:18px;font-weight:700}.timer .tip{color:var(--muted);font-size:12px;line-height:1.5;margin:8px 0 18px}
+.note{background:#f5f6f7;border-radius:14px;padding:12px;color:#6e747b;font-size:12px;line-height:1.55}
+@media(max-width:480px){.app{padding-top:12px}.score{font-size:52px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top"><div><div class="greet" id="todayText"></div><h1>小西瓜，今天做一点</h1></div><button class="menu" onclick="openDrawer()">☰</button></div>
+
+  <section class="card hero">
+    <div class="row">
+      <div><div class="label">今日薄肌指数</div><div class="score"><span id="score">0</span><span style="font-size:18px;color:#737981">/100</span></div></div>
+      <div class="goal">目标<b>约 15% 体脂</b><span id="weightTxt">75 kg</span></div>
+    </div>
+    <div class="bar"><i id="bar"></i></div>
+    <div class="mini">
+      <div><b id="foodScore">0/50</b><span>饮食</span></div>
+      <div><b id="trainScore">0/30</b><span>训练</span></div>
+      <div><b id="sleepScore">0/20</b><span>恢复</span></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>🍽️ 今天怎么吃</h2>
+    <div class="sub">照着吃就好；实际吃了什么，记录后再算。</div>
+    <div id="meals"></div>
+    <button class="btn light" style="margin-top:9px" onclick="shuffleMeals()">换一套</button>
+  </section>
+
+  <section class="card">
+    <h2>💪 今日居家训练</h2>
+    <div class="train-main">
+      <div class="muted">今天 · <span id="dayPlan">全身力量</span></div>
+      <strong id="trainTitle">基础全身训练</strong>
+      <div class="muted" id="trainDesc">20–25 分钟 · 不需要器械</div>
+      <div class="train-actions">
+        <button class="start" onclick="openWorkout()">开始训练</button>
+        <button class="done" onclick="markTraining()">已完成</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>😴 恢复</h2>
+    <div class="habit">
+      <div><b id="sleepText">未记录</b><span>昨晚睡眠</span></div>
+      <div><b id="waterText">0 ml</b><span>今日饮水</span></div>
+    </div>
+    <div class="inline" style="margin-top:10px"><button class="btn light" onclick="openSleep()">记录睡眠</button><button class="btn light" onclick="addWater()">+250ml</button></div>
+  </section>
+
+  <section class="card">
+    <h2>📷 吃之前拍一下</h2>
+    <div class="note">拍照识别只是辅助。你确认后的结果才会计入真实饮食。</div>
+    <button class="btn" style="margin-top:10px" onclick="openPhoto()">饭前记录</button>
+  </section>
+</div>
+
+<div class="drawer" id="drawer" onclick="if(event.target===this)closeDrawer()">
+  <aside class="panel">
+    <div class="head"><h2 style="margin:0">小西瓜个人计划</h2><button class="close" onclick="closeDrawer()">×</button></div>
+    <div class="section">我的目标</div>
+    <div class="note">175cm · 75kg · 24岁 · 久坐<br>目标：约15%体脂，重点是减脂同时保持/增加肌肉。</div>
+    <div class="section">本周安排</div>
+    <div class="list">
+      <button onclick="showWeek()">7天训练 <span>查看</span></button>
+      <button onclick="showMealsWeek()">7天饮食 <span>查看</span></button>
+    </div>
+    <div class="section">身体</div>
+    <div class="list">
+      <button onclick="editWeight();closeDrawer()">更新体重 <span id="sideWeight">75 kg</span></button>
+      <button onclick="showHistory()">历史记录 <span>查看</span></button>
+    </div>
+    <div class="section">训练原则</div>
+    <div class="note">本计划以全身力量训练为主，穿插低强度活动和恢复日。成人应至少每周进行2天主要肌群力量训练，并逐步达到每周150分钟中等强度活动；循序渐进比一次练很狠更容易坚持。<br><br>来源：WHO / CDC 运动指南。</div>
+  </aside>
+</div>
+
+<div class="modal" id="modal"><div class="sheet" id="sheet"></div></div>
+
+<script>
+const KEY='thinmuscle_v81_personal';
+const PROFILE={name:'小西瓜',age:24,height:175,weight:75,goalFat:15,activity:'久坐'};
+const WEEK=[
+ {name:'周一',title:'全身力量 A',desc:'20–25 分钟 · 下肢 + 推 + 核心'},
+ {name:'周二',title:'轻活动日',desc:'20–30 分钟快走/室内走 + 拉伸'},
+ {name:'周三',title:'全身力量 B',desc:'20–25 分钟 · 髋部 + 拉 + 核心'},
+ {name:'周四',title:'轻活动日',desc:'20–30 分钟轻松走动 + 拉伸'},
+ {name:'周五',title:'全身力量 C',desc:'20–25 分钟 · 全身循环'},
+ {name:'周六',title:'轻活动日',desc:'30–40 分钟轻松步行/家务活动'},
+ {name:'周日',title:'恢复日',desc:'10 分钟舒展 + 正常生活活动'}
+];
+const MEALS=[
+ ['早餐','红薯 + 鸡蛋 + 牛奶 + 香蕉','主食 + 蛋白质 + 奶类 + 水果'],
+ ['午餐','米饭 + 鸡胸肉 + 家常蔬菜','主食 + 蛋白质 + 蔬菜'],
+ ['晚餐','玉米 + 家常肉菜 + 青菜','适量主食 + 蛋白质 + 蔬菜']
+];
+const EXA=[
+ ['热身','原地踏步 + 肩绕环',60,'先把身体热起来，动作轻松。'],
+ ['深蹲','徒手深蹲',45,'膝盖跟脚尖方向一致，慢慢下蹲。'],
+ ['俯卧撑','俯卧撑（可跪姿）',45,'身体保持稳定，做不到标准版就跪姿。'],
+ ['臀桥','臀桥',45,'脚掌踩地，收紧臀部后抬髋。'],
+ ['平板','平板支撑',30,'收紧腹部，保持身体一条线。'],
+ ['休息','休息',30,'走动几步，慢慢调整呼吸。'],
+ ['反向弓步','反向弓步',45,'一步向后，保持躯干稳定。'],
+ ['俯身划船','背包划船',45,'用装少量物品的背包，肘部向后拉。'],
+ ['死虫','死虫式',45,'腰部贴地，左右交替伸展。'],
+ ['收尾','原地慢走 + 呼吸',60,'让心率慢慢下来。']
+];
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||{profile:PROFILE,days:{},started:'今天'}}catch(e){return{profile:PROFILE,days:{},started:'今天'}}}
+let state=load();state.profile={...PROFILE,...state.profile};
+function key(){return new Date().toISOString().slice(0,10)}
+function d(){const k=key();if(!state.days[k])state.days[k]={meals:MEALS.map(x=>x[1]),trained:false,sleep:null,water:0,logs:[]};return state.days[k]}
+function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+function render(){
+ const x=d();
+ document.getElementById('todayText').textContent=new Date().toLocaleDateString('zh-CN',{month:'long',day:'numeric',weekday:'long'});
+ document.getElementById('weightTxt').textContent=state.profile.weight+' kg';
+ document.getElementById('sideWeight').textContent=state.profile.weight+' kg';
+ document.getElementById('meals').innerHTML=MEALS.map((m,i)=>`<div class="meal"><div class="meal-top"><div class="meal-title">${m[0]}</div><span class="meta">${m[2]}</span></div><div class="food">${x.meals[i]}</div><button class="btn light" style="padding:9px;margin-top:4px" onclick="editMeal(${i})">换这一餐</button></div>`).join('');
+ const idx=new Date().getDay();const w=WEEK[(idx+6)%7];document.getElementById('dayPlan').textContent=w.name;document.getElementById('trainTitle').textContent=w.title;document.getElementById('trainDesc').textContent=w.desc;
+ document.getElementById('trainState')?.remove();
+ document.getElementById('sleepText').textContent=x.sleep?x.sleep+' 小时':'未记录';
+ document.getElementById('waterText').textContent=x.water+' ml';
+ const food=Math.min(50,x.logs.length>=3?50:x.logs.length===2?38:x.logs.length===1?22:0);
+ const train=x.trained?30:0;const sleep=x.sleep?(x.sleep>=7&&x.sleep<=9?20:x.sleep>=6?14:8):0;const total=food+train+sleep;
+ document.getElementById('score').textContent=total;document.getElementById('foodScore').textContent=food+'/50';document.getElementById('trainScore').textContent=train+'/30';document.getElementById('sleepScore').textContent=sleep+'/20';document.getElementById('bar').style.width=total+'%';
+ save();
+}
+function shuffleMeals(){const sets=[
+ ['红薯 + 鸡蛋 + 牛奶 + 苹果','米饭 + 鸡胸肉 + 西兰花','玉米 + 鱼 + 青菜'],
+ ['玉米 + 鸡蛋 + 牛奶 + 香蕉','米饭 + 瘦牛肉 + 生菜','红薯 + 鸡胸肉 + 番茄'],
+ ['燕麦 + 牛奶 + 鸡蛋 + 苹果','糙米饭 + 鸡胸肉 + 家常蔬菜','玉米 + 豆腐 + 青菜']
+];d().meals=sets[Math.floor(Math.random()*sets.length)];save();render();toast('已换一套今天的方案')}
+function editMeal(i){const opts=[...new Set(MEALS.map(m=>m[1]).concat(['红薯 + 鸡蛋 + 牛奶 + 香蕉','玉米 + 鸡蛋 + 牛奶 + 苹果','米饭 + 瘦牛肉 + 西兰花','米饭 + 鱼 + 青菜','红薯 + 豆腐 + 青菜']))];openSheet(`<div class="sheethead"><h3>${MEALS[i][0]}</h3><button class="close" onclick="closeModal()">×</button></div><div class="opts">${opts.map(v=>`<button class="opt" onclick="chooseMeal(${i},\`${v.replace(/`/g,'')}\`)">${v}</button>`).join('')}</div>`)}
+function chooseMeal(i,v){d().meals[i]=v;save();closeModal();render()}
+function openWorkout(){const x=d();const completed=x.trained;let i=0, timer=null, running=false;function ui(){const e=EXA[i]||EXA[0];document.getElementById('sheet').innerHTML=`<div class="sheethead"><h3>今日训练 · ${WEEK[(new Date().getDay()+6)%7].title}</h3><button class="close" onclick="stopWorkout()">×</button></div><div class="timer"><div class="label">动作 ${i+1}/${EXA.length}</div><div class="name">${e[0]} · ${e[1]}</div><div class="num" id="tNum">${e[2]}</div><div class="tip">${e[3]}</div><button class="btn" id="tBtn" onclick="toggleT()">${running?'暂停':'开始'}</button><button class="btn light" style="margin-top:8px" onclick="nextT()">下一个</button></div>`}
+window.toggleT=function(){if(running){clearInterval(timer);running=false}else{running=true;timer=setInterval(()=>{let n=parseInt(document.getElementById('tNum').textContent)-1;if(n<=0){clearInterval(timer);running=false;nextT()}else document.getElementById('tNum').textContent=n;},1000)};ui()}
+window.nextT=function(){clearInterval(timer);running=false;if(i<EXA.length-1){i++;ui()}else{d().trained=true;save();closeModal();render();toast('训练完成 ✅')}}
+window.stopWorkout=function(){clearInterval(timer);closeModal()}
+ui();openModal()
+}
+function markTraining(){d().trained=true;save();render();toast('今天训练已记录 ✅')}
+function openPhoto(){openSheet(`<div class="sheethead"><h3>饭前记录</h3><button class="close" onclick="closeModal()">×</button></div><div class="note">当前单文件原型先模拟拍照识别。实际接入相机/AI后，流程保持：拍照 → 识别 → 用户修改 → 确认 → 入账。</div><button class="btn" style="margin-top:12px" onclick="confirmPhoto()">模拟拍照并确认</button>`)}
+function confirmPhoto(){d().logs.push({meal:'午餐',source:'拍照后确认',text:'米饭 + 鸡胸肉 + 西兰花'});save();closeModal();render();toast('已记录这顿饭 ✅')}
+function openSleep(){openSheet(`<div class="sheethead"><h3>昨晚睡眠</h3><button class="close" onclick="closeModal()">×</button></div><input id="sleepIn" type="number" min="0" max="16" step="0.1" placeholder="例如 7.5" style="margin:14px 0"><button class="btn" onclick="saveSleep()">保存</button>`)}
+function saveSleep(){let v=parseFloat(document.getElementById('sleepIn').value);if(v>0){d().sleep=v;save();closeModal();render();toast('睡眠已记录')}}
+function addWater(){d().water=Math.min(3000,d().water+250);save();render();toast('已记录250ml')}
+function editWeight(){openSheet(`<div class="sheethead"><h3>更新体重</h3><button class="close" onclick="closeModal()">×</button></div><input id="wIn" type="number" step="0.1" value="${state.profile.weight}" style="margin:14px 0"><button class="btn" onclick="saveWeight()">保存</button>`)}
+function saveWeight(){let v=parseFloat(document.getElementById('wIn').value);if(v>0){state.profile.weight=v;save();closeModal();render();toast('体重已更新')}}
+function showWeek(){openSheet(`<div class="sheethead"><h3>本周训练</h3><button class="close" onclick="closeModal()">×</button></div>${WEEK.map((w,i)=>`<div style="padding:12px 0;border-bottom:1px solid var(--line)"><b>${w.name}</b><div class="sub">${w.title} · ${w.desc}</div></div>`).join('')}`)}
+function showMealsWeek(){openSheet(`<div class="sheethead"><h3>本周饮食思路</h3><button class="close" onclick="closeModal()">×</button></div><div class="note">早餐以你习惯的红薯/玉米/牛奶/鸡蛋为主；午晚餐以家常菜 + 蛋白质 + 主食 + 蔬菜为主。每周提前看整体方向，具体当天再调整。</div><div style="margin-top:12px">${['周一','周二','周三','周四','周五','周六','周日'].map(d=>`<div style="padding:11px 0;border-bottom:1px solid var(--line)"><b>${d}</b><div class="sub">早餐：主食 + 鸡蛋 + 牛奶 + 水果；午/晚餐：蛋白质 + 主食 + 蔬菜</div></div>`).join('')}</div>`)}
+function showHistory(){const rows=Object.entries(state.days).sort((a,b)=>b[0].localeCompare(a[0])).slice(0,14);openSheet(`<div class="sheethead"><h3>历史</h3><button class="close" onclick="closeModal()">×</button></div>${rows.map(([k,v])=>`<div style="padding:11px 0;border-bottom:1px solid var(--line)"><b>${k}</b><div class="sub">饮食 ${v.logs?.length||0} 次 · 训练 ${v.trained?'完成':'未完成'} · 睡眠 ${v.sleep||'—'}h · 饮水 ${v.water||0}ml</div></div>`).join('')||'<div class="sub">暂无历史数据</div>'}`)}
+function openDrawer(){document.getElementById('drawer').classList.add('open')}function closeDrawer(){document.getElementById('drawer').classList.remove('open')}
+function openModal(){document.getElementById('modal').classList.add('open')}function closeModal(){document.getElementById('modal').classList.remove('open')}function openSheet(h){document.getElementById('sheet').innerHTML=h;openModal()}
+function toast(t){const e=document.createElement('div');e.textContent=t;e.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#111;color:#fff;padding:10px 15px;border-radius:12px;z-index:50;font-size:13px';document.body.appendChild(e);setTimeout(()=>e.remove(),1500)}
+document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});render();
+</script>
+</body></html>
